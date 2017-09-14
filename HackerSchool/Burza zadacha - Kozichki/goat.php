@@ -1,7 +1,13 @@
 <?php
 
+//$first_line = array(6, 2);
+//$goat_weights = array(26, 7, 10, 30, 5, 4);
+
+//$first_line = array(6, 2);
+//$goat_weights = array(4, 8, 15, 16, 23, 42);
+
 $first_line = array(15, 3);
-$goat_weights = array(666, 42, 7, 13, 400, 511, 600, 200, 202, 111, 313, 94, 280, 72, 42);
+$goat_weights = array(666000, 42000, 7000, 13000, 400000, 511000, 600000, 200000, 202000, 111000, 313000, 94000, 280000, 72000, 42000);
 
 $goats_num = $first_line[0];
 $max_courses = $first_line[1];
@@ -55,6 +61,6 @@ while(true) {
 }
 
 
-echo $min_capacity;
+echo $min_capacity . "\n";
 
 ?>
