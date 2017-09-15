@@ -2,10 +2,10 @@
 
 $file = fopen("markers_big.csv", "a+") or die("Unable to open file!");
 
-$contents = fread($file,filesize("markers_big.csv")/1000);
+$contents = fread($file,filesize("markers_big.csv"));
 
 
-for($i = 0; $i < 1000; $i++) {
+for($i = 0; $i < 8800; $i++) {
 	
 	fwrite($file, $contents);
 	
