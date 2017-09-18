@@ -20,7 +20,11 @@
 			  if(e.keyCode == 13) {
 				$.get("ekatte_search.php", { name:selishte }, function(data, status){
 					$('#results').empty();
-					$('#results').append(data);
+					if(data != 0) {						
+						$('#results').append(data);
+			     	} else {
+						$('#no_results').append("Няма намерени резултати");
+					}
 				});	  
 			  }
 	      });
@@ -41,6 +45,8 @@
 	  <tbody id="results">
 	  </tbody>
   </table>
+  <div id="no_results">
+  </div>
 </body>
 
 </html>
