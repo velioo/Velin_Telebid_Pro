@@ -1,6 +1,6 @@
 <?php
 
-include 'user_pass_ekatte.php';
+include '../user_pass_ekatte.php';
 
 $conn = new mysqli($servername, $username, $password, $database);
 
@@ -12,17 +12,17 @@ mysqli_set_charset($conn,"utf8");
 
 $selishte = mysqli_real_escape_string($conn, $_GET['name']);
 
-$sql = "SELECT DISTINCT selishta.type, selishta.name, oblasti.name as oblast_name, obshtini.name as obshtina_name FROM selishta 
-											 JOIN oblasti on selishta.oblast_f = oblasti.oblast
-											 JOIN obshtini on selishta.obstina_f = obshtini.obshtina
+$sql = "SELECT DISTINCT selishta.type, selishta.name, obshtini.name as obshtina_name, oblasti.name as oblast_name FROM selishta 
+											 JOIN obshtini on obshtini.obshtina = selishta.obshtina_f
+											 JOIN oblasti on oblasti.oblast = obshtini.oblast_f											 
 											 WHERE selishta.name LIKE '%{$selishte}%'";  
 if ($result = $conn->query($sql)) {
 	if($result->num_rows > 0) {
 		while($row = mysqli_fetch_assoc($result)) {			
 			echo "<tr>" 
 			    ."<td>" . $row['type'] . " " . $row['name'] . "</td>"
-			    ."<td>" . $row['oblast_name'] . "</td>"
 			    ."<td>" . $row['obshtina_name'] . "</td>"
+			    ."<td>" . $row['oblast_name'] . "</td>"
 			    ."</tr>";			
 		}
 	} else {

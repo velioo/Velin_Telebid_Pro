@@ -18,34 +18,41 @@
 		  $('#search_selishta').on('keyup', function(e) { 
 			  var selishte = $('#search_selishta').val();
 			  if(e.keyCode == 13) {
-				$.get("ekatte_search.php", { name:selishte }, function(data, status){
+				$.get("ekatte_search.php", { name:selishte }, function(data) {
 					$('#results').empty();
+					$('#no_results').hide();
 					if(data != 0) {						
 						$('#results').append(data);
 			     	} else {
-						$('#no_results').append("Няма намерени резултати");
+						$('#no_results').show();
 					}
 				});	  
 			  }
 	      });
 		  
 	  });
-  </script>	
+  </script>
+  <div style="margin:0% 20% 20% 20%;">
   <p>Търси селища</p>
+  <hr>
   <input type="search" value="" id="search_selishta">
   </br></br>
-  <table border="1" style="border-color: red;">
+  <div style="">
+  <table border="1" cellpadding="5">
 	  <thead>
 		 <tr>
-			 <td>Селище</td>
-			 <td>Област</td>
+			 <td>Селище</td>		
 			 <td>Община</td>
+			 <td>Област</td>
 	     </tr>
 	  </thead>
 	  <tbody id="results">
 	  </tbody>
   </table>
-  <div id="no_results">
+  </div>
+  <div id="no_results" style="display:none;">
+	  Няма намерени резултати
+  </div>
   </div>
 </body>
 
