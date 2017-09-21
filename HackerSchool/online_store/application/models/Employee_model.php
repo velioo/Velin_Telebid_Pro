@@ -2,10 +2,10 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class User_model extends CI_Model {
+class Employee_model extends CI_Model {
 
     function __construct() {
-        $this->tableName = 'users';
+        $this->tableName = 'employees';
     }
 
     function getRows($params = array()) {

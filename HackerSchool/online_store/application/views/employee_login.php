@@ -2,7 +2,7 @@
 
 <div id="body">
 
-<h2>Влез в профил</h2>
+<h2>Вход за служители</h2>
     <?php
 	if(!empty($this->session->userdata('success_msg'))){
 		echo '<p class="statusMsg">' . $this->session->userdata('success_msg') . '</p>';
@@ -12,10 +12,10 @@
 		$this->session->unset_userdata('error_msg');
 	}
     ?>
-    <form action="<?php echo site_url("users/login"); ?>" method="post">
+    <form action="<?php echo site_url("employees/login"); ?>" method="post">
         <div class="form-group has-feedback">
-            <input type="email" class="form-control" name="email" placeholder="Имейл" required="" value="" autocomplete="off">
-            <?php echo form_error('email','<span class="help-block">','</span>'); ?>
+            <input type="text" class="form-control" name="username" placeholder="Потребителско име" required="" value="" autocomplete="off">
+            <?php echo form_error('username','<span class="help-block">','</span>'); ?>
         </div>
         <div class="form-group">
           <input type="password" class="form-control" name="password" placeholder="Парола" required="">
@@ -25,7 +25,6 @@
             <input type="submit" name="loginSubmit" class="btn-primary" value="Вход"/>
         </div>
     </form>
-    <p class="footInfo">Няма профил? <a href="<?php echo base_url(); ?>users/registration">Регистрирай се</a></p>
 
 </div>
 

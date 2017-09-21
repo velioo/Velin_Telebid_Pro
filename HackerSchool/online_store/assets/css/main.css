@@ -1,0 +1,80 @@
+html,body{
+    height: 100%;
+}
+
+.navbar-nav.center {
+	width: 100%;
+	text-align: center;
+}
+
+.navbar-nav.center li {
+	float: none;
+	display: inline-block;
+}
+
+#holder{
+	width: 1150px;
+	margin: auto;
+    margin-top: 100px;
+}
+
+#body {
+	width: 40%;
+	margin: 0 auto;
+	margin-top: 100px;
+}
+
+#navigation_top2 {
+	z-index: -1; 
+}
+
+.vertical-menu {
+    width: 200px;
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 20px;
+}
+
+.vertical-menu.employee {
+	margin-top: 80px;
+}
+
+.vertical-menu a {
+    background-color: #eee;
+    color: black;
+    display: block;
+    padding: 12px;
+    text-decoration: none;
+}
+
+.vertical-menu a:hover {
+    background-color: #ccc;
+}
+
+.vertical-menu a.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.account-info {
+	width: 80%;
+	display: inline-block;
+}
+
+.profile_tab_title {
+	font-size: 30px;
+	margin-bottom: 10px;
+}
+
+.help-block {
+	color: red;
+}
+
+.statusMsg {
+	color: blue;
+}
+
+#category {
+	width: auto;
+}
+

@@ -2,20 +2,36 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class User_model extends CI_Model {
+class Product_model extends CI_Model {
 
     function __construct() {
-        $this->tableName = 'users';
+        $this->tableName = 'products';
     }
 
     function getRows($params = array()) {
 		
-        $this->db->select('*');
-        $this->db->from($this->tableName);
+		if(array_key_exists("select", $params)) {
+             $this->db->select($params['select']);          
+        } else {
+			 $this->db->select('*');
+		}
+       
+        
+        if(array_key_exists("table", $params)) {
+            $this->db->from($params['table']);
+        } else {
+			$this->db->from($this->tableName);
+		}             
         
         if(array_key_exists("conditions", $params)) {
             foreach ($params['conditions'] as $key => $value) {
                 $this->db->where($key, $value);
+            }
+        }
+        
+        if(array_key_exists("joins", $params)) {
+            foreach ($params['joins'] as $key => $value) {
+                $this->db->join($key, $value);
             }
         }
         

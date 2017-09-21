@@ -1,14 +1,6 @@
 <?php
 
-defined('BASEPATH') OR exit('No direct script access allowed');
-
-class User_model extends CI_Model {
-
-    function __construct() {
-        $this->tableName = 'users';
-    }
-
-    function getRows($params = array()) {
+function getRows($params = array()) {
 		
         $this->db->select('*');
         $this->db->from($this->tableName);
@@ -73,25 +65,4 @@ class User_model extends CI_Model {
 		
 	}
 	
-	public function delete($params = array()) {
-		
-		if(array_key_exists("conditions", $params)) {
-            foreach ($params['conditions'] as $key => $value) {
-                $this->db->where($key, $value);
-            }
-        }
-        
-        if(array_key_exists("id", $params)) {
-            $this->db->where('id', $params['id']);
-            $delete = $this->db->delete($this->tableName);
-            return $delete;
-        } else {
-			return FALSE;
-		}  
-	}
-
-
-}
-
-
 ?>
