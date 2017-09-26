@@ -1,7 +1,7 @@
 <?php require 'header.php'; ?>
 
 <div id="body">
-
+<div id="wrap" style="width: 80%;">
 <h2>Влез в профил</h2>
     <?php
 	if(!empty($this->session->userdata('success_msg'))){
@@ -26,7 +26,7 @@
         </div>
     </form>
     <p class="footInfo">Няма профил? <a href="<?php echo base_url(); ?>users/registration">Регистрирай се</a></p>
-
+</div>
 </div>
 
 <?php require 'footer.php'; ?>

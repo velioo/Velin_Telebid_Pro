@@ -40,7 +40,7 @@ class Employees extends CI_Controller {
                     redirect('/employees/dashboard/');
                     
                 } else{
-                    $this->session->set_userdata('error_msg', 'Wrong email or password, please try again.');
+                    $this->session->set_userdata('error_msg', 'Wrong username or password, please try again.');
                 }               
             }
             
@@ -56,7 +56,7 @@ class Employees extends CI_Controller {
 	public function logout() {
         $this->session->unset_userdata('isEmployeeLoggedIn');
         $this->session->unset_userdata('employeeId');
-        $this->session->sess_destroy();
+        //$this->session->sess_destroy();
         redirect('/employees/login/');
     }
 	

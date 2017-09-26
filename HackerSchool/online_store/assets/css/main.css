@@ -14,18 +14,17 @@ html,body{
 
 #holder{
 	width: 1150px;
+	min-height: 90%;
 	margin: auto;
-    margin-top: 100px;
 }
 
 #body {
-	width: 40%;
 	margin: 0 auto;
-	margin-top: 100px;
 }
 
 #navigation_top2 {
-	z-index: -1; 
+	z-index: 1; 
+	background-color: white;
 }
 
 .vertical-menu {
@@ -36,7 +35,7 @@ html,body{
 }
 
 .vertical-menu.employee {
-	margin-top: 80px;
+	margin-top: 130px;
 }
 
 .vertical-menu a {
@@ -57,8 +56,12 @@ html,body{
 }
 
 .account-info {
-	width: 80%;
+	width: 70%;
 	display: inline-block;
+}
+
+.account-info.employee {
+	margin-top: 70px;
 }
 
 .profile_tab_title {
@@ -78,3 +81,36 @@ html,body{
 	width: auto;
 }
 
+.active {
+	background-color:rgb(238,238,238);
+}
+
+#wrap {
+	width: 100%;
+	margin: auto;
+}
+
+.row-eq-height {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display:  flex;
+}
+.col-sm-3.product {
+	background-color: rgb(238,238,238);
+	margin: 10px;
+	position: relative;
+}
+
+.product_image {
+	border-radius: 3px;
+	display: inline-block;
+	margin: 10px 0px;
+	max-height:220px;
+	max-width: 220px;
+	cursor: pointer;
+}
+
+.product_name.no_underline, .product_category.no_underline {
+	text-decoration: none;
+}

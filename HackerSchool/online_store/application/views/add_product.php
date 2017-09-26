@@ -7,7 +7,7 @@
 	  <a href="<?php echo site_url("employees/add_product"); ?>" class="active">Добави продукт</a>
 </div>
 
-<div class="account-info">
+<div class="account-info employee">
 	<div class="profile_tab_title">Добави продукт</div>
 	<hr>
 	

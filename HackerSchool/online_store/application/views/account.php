@@ -1,6 +1,6 @@
 <?php require 'header.php'; ?>
 
-<div id="body" style="width: 60%;">
+<div id="body">
 
 <h2>Моят профил</h2>
     <div class="vertical-menu">
@@ -39,11 +39,11 @@
 		<h3>Промяна на име и имейл</h3>
 		<form action="<?php echo site_url("users/update_name_email"); ?>" method="post">
 			<div class="form-group">
-				<input type="text" class="form-control" name="name" placeholder="Име" required="" value="<?php echo !empty($user['name']) ? $user['name'] : ''; ?>">
+				<input type="text" class="form-control" name="name" placeholder="Име" required="" value="<?php echo !empty($user['name']) ? htmlspecialchars($user['name'], ENT_QUOTES) : ''; ?>">
 			  <?php echo form_error('name','<span class="help-block">','</span>'); ?>
 			</div>
 			<div class="form-group">
-				<input type="email" class="form-control" name="email" placeholder="Имейл" required="" value="<?php echo !empty($user['email']) ? $user['email'] : ''; ?>">
+				<input type="email" class="form-control" name="email" placeholder="Имейл" required="" value="<?php echo !empty($user['email']) ? htmlspecialchars($user['email'], ENT_QUOTES) : ''; ?>">
 			  <?php echo form_error('email','<span class="help-block">','</span>'); ?>
 			</div>
 			<div class="form-group">

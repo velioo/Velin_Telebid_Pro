@@ -1,28 +1,29 @@
 <?php require 'header.php'; ?>
 
 <div id="body">
-
+<div id="wrap" style="width: 80%;">
 <h2>Регистрация</h2>
     <form action="<?php echo site_url("users/registration"); ?>" method="post">
         <div class="form-group">
-            <input type="text" class="form-control" name="name" placeholder="Име" required="" value="<?php echo !empty($user['name']) ? $user['name'] : ''; ?>">
+            <input type="text" class="form-control" name="name" placeholder="Име" required="" value="<?php echo !empty($user['name']) ? htmlspecialchars($user['name'], ENT_QUOTES) : ''; ?>">
           <?php echo form_error('name','<span class="help-block">','</span>'); ?>
         </div>
         <div class="form-group">
-            <input type="email" class="form-control" name="email" placeholder="Имейл" required="" value="<?php echo !empty($user['email']) ? $user['email'] : ''; ?>">
+            <input type="text" class="form-control" name="email" placeholder="Имейл" required="" value="<?php echo !empty($user['email']) ? htmlspecialchars($user['email'], ENT_QUOTES) : ''; ?>">
           <?php echo form_error('email','<span class="help-block">','</span>'); ?>
         </div>
         <div class="form-group">
-            <input type="text" class="form-control" name="phone" placeholder="Телефон" value="<?php echo !empty($user['phone']) ? $user['phone'] : ''; ?>">
+            <input type="text" class="form-control" name="phone" placeholder="Телефон" value="<?php echo !empty($user['phone']) ? htmlspecialchars($user['phone'], ENT_QUOTES) : ''; ?>">
+            <?php echo form_error('phone','<span class="help-block">','</span>'); ?>
         </div>
          <div class="form-group">
-            <input type="text" class="form-control" name="country" placeholder="Държава" value="<?php echo !empty($user['country']) ? $user['country'] : ''; ?>">
+            <input type="text" class="form-control" name="country" placeholder="Държава" value="<?php echo !empty($user['country']) ? htmlspecialchars($user['country'], ENT_QUOTES) : ''; ?>">
         </div>
         <div class="form-group">
-            <input type="text" class="form-control" name="region" placeholder="Регион" value="<?php echo !empty($user['region']) ? $user['region'] : ''; ?>">
+            <input type="text" class="form-control" name="region" placeholder="Регион" value="<?php echo !empty($user['region']) ? htmlspecialchars($user['region'], ENT_QUOTES) : ''; ?>">
         </div>
          <div class="form-group">
-            <input type="text" class="form-control" name="street_address" placeholder="Адрес" value="<?php echo !empty($user['street_address']) ? $user['street_address'] : ''; ?>">
+            <input type="text" class="form-control" name="street_address" placeholder="Адрес" value="<?php echo !empty($user['street_address']) ? htmlspecialchars($user['street_address'], ENT_QUOTES) : ''; ?>">
         </div>
         <div class="form-group">
           <input type="password" class="form-control" name="password" placeholder="Парола" required="">
@@ -60,7 +61,7 @@
         </div>
     </form>
     <p class="footInfo">Вече имаш профил? <a href="<?php echo base_url(); ?>users/login">Влез</a></p>       
-
+</div>
 </div>
 
 <?php require 'footer.php'; ?>

@@ -1,7 +1,7 @@
 <?php require 'header.php'; ?>
 
 <div id="body">
-
+<div id="wrap" style="width: 80%;">
 <h2>Вход за служители</h2>
     <?php
 	if(!empty($this->session->userdata('success_msg'))){
@@ -25,7 +25,7 @@
             <input type="submit" name="loginSubmit" class="btn-primary" value="Вход"/>
         </div>
     </form>
-
+</div>
 </div>
 
 <?php require 'footer.php'; ?>

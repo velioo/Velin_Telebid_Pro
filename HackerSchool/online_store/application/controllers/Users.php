@@ -98,6 +98,7 @@ class Users extends CI_Controller {
 			
             $this->form_validation->set_rules('name', 'Name', 'required');
             $this->form_validation->set_rules('email', 'Email', 'required|valid_email|callback_email_check');
+            $this->form_validation->set_rules('phone', 'Phone', 'max_length[32]');
             $this->form_validation->set_rules('password', 'password', 'required');
             $this->form_validation->set_rules('conf_password', 'confirm password', 'required|matches[password]');
 
@@ -199,7 +200,7 @@ class Users extends CI_Controller {
     public function logout() {
         $this->session->unset_userdata('isUserLoggedIn');
         $this->session->unset_userdata('userId');
-        $this->session->sess_destroy();
+        //$this->session->sess_destroy();
         redirect('/users/login/');
     }
     

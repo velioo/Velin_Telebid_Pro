@@ -1,5 +1,16 @@
 <?php include 'dashboard_header.php'; ?>
 
+<script src="<?php echo asset_url() . "js/delete_product.js"; ?>"></script>
+
+<script>
+	
+	function getDeleteUrl() {
+		var url = "<?php echo site_url("products/delete_product"); ?>";
+		return url;
+	}
+
+</script>
+
 <div id="body" style="width: 100%;">
 
 <div class="vertical-menu employee">
@@ -7,7 +18,7 @@
 	  <a href="<?php echo site_url("employees/add_product"); ?>" >Добави продукт</a>
 </div>
 
-<div class="account-info">
+<div class="account-info employee">
 	<div class="profile_tab_title">Всички продукти</div>
 	<hr>
 	
@@ -39,14 +50,14 @@
 		<tbody>
 		<?php foreach($products as $product) { ?>
 		  <tr>
-			<td><?php echo htmlentities($product['name']); ?></td>
-			<td><?php echo htmlentities($product['category']); ?></td>
-			<td><?php echo htmlentities($product['price_leva']); ?></td>
-			<td><?php echo htmlentities($product['available']); ?></td>
-			<td><?php echo htmlentities($product['created_at']); ?></td>
-			<td><?php echo htmlentities($product['updated_at']); ?></td>
+			<td><?php echo htmlspecialchars($product['name'], ENT_QUOTES); ?></td>
+			<td><?php echo htmlspecialchars($product['category'], ENT_QUOTES); ?></td>
+			<td><?php echo htmlspecialchars($product['price_leva'], ENT_QUOTES); ?></td>
+			<td><?php echo htmlspecialchars($product['available'], ENT_QUOTES); ?></td>
+			<td><?php echo htmlspecialchars($product['created_at'], ENT_QUOTES); ?></td>
+			<td><?php echo htmlspecialchars($product['updated_at'], ENT_QUOTES); ?></td>
 			<td><a href="<?php echo site_url("employees/update_product/{$product['id']}"); ?>">Редактирай</a></td>
-			<td><a href="<?php echo site_url("employees/delete_product/{$product['id']}"); ?>">Изтрий</a></td>
+			<td><a href="#" data-id="<?php echo $product['id']; ?>" class="delete_record">Изтрий</a></td>
 		  </tr>
 		  <?php } ?>
 		</tbody>
