@@ -4,6 +4,7 @@
 
 <h2>Моят профил</h2>
     <div class="vertical-menu">
+	  <a href="<?php echo site_url("users/cart"); ?>">Количка</a>
 	  <a href="<?php echo site_url("users/orders"); ?>">Поръчки</a>
 	  <a href="<?php echo site_url("users/account"); ?>" class="active">Настройки</a>
 	  <a href="<?php echo site_url("users/details"); ?>">Детайли</a>

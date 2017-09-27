@@ -2,21 +2,21 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Employee_model extends CI_Model {
+class Cart_model extends CI_Model {
 
      function __construct() {
-        $this->tableName = 'employees';
+        $this->tableName = 'cart';
      }
 
      function getRows($params = array()) {
-		
+		 
 		if(array_key_exists("custom", $params)) {
 			
 			$query = $this->db->query($params['custom']);			
 			return $query->result_array();
 			
 		} else {
-			
+		
 			if(array_key_exists("select", $params)) {
 				 $this->db->select($params['select']);          
 			} else {
@@ -28,7 +28,7 @@ class Employee_model extends CI_Model {
 				$this->db->from($params['table']);
 			} else {
 				$this->db->from($this->tableName);
-			}             
+			}             			
 			
 			if(array_key_exists("joins", $params)) {
 				foreach ($params['joins'] as $key => $value) {
@@ -41,7 +41,7 @@ class Employee_model extends CI_Model {
 				$query = $this->db->get();
 				$result = $query->row_array();
 			} else {
-
+				
 				if(array_key_exists("conditions", $params)) {
 					foreach ($params['conditions'] as $key => $value) {
 						$this->db->where($key, $value);

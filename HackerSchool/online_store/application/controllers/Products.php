@@ -14,10 +14,10 @@ class Products extends CI_Controller {
 		redirect();
 	}
 	
-	public function search() {
+	public function search($searchCategoryId=null) {
 		$this->load->library('pagination');
 		$config = $this->configure_pagination();
-		$config['base_url'] = site_url();
+		$config['base_url'] = site_url("products/search");
 		$config['per_page'] = 28;
 		
 		if($this->input->get('page') != NULL and is_numeric($this->input->get('page')) and $this->input->get('page') > 0) {
@@ -26,9 +26,10 @@ class Products extends CI_Controller {
 			$start = 0;
 		}
 		
-		$searchWord = $this->input->get('search_input');
-		
-		$data['products'] = $this->product_model->getRows( array('select' => array('products.*', 'categories.name as category'),
+		if($searchCategoryId === null) {
+			
+			$searchWord = $this->input->get('search_input');
+			$data['products'] = $this->product_model->getRows( array('select' => array('products.*', 'categories.name as category', 'categories.id as category_id'),
 																 'joins' => array('categories' => 'categories.id=products.category_id'),
 																 'like' => array('products.name' => $searchWord),
 																 'or_like' => array('products.description' => $searchWord),
@@ -36,7 +37,25 @@ class Products extends CI_Controller {
 																 'start' => $start,
 																 'limit' => $config['per_page']) );	
 																																											
-		$config['total_rows'] = $this->product_model->getRows(array('returnType' => 'count'));								
+			$config['total_rows'] = $this->product_model->getRows(array('returnType' => 'count'));						
+			
+			
+		} else {
+			
+			$data['products'] = $this->product_model->getRows( array('select' => array('products.*', 'categories.name as category', 'categories.id as category_id'),
+																 'joins' => array('categories' => 'categories.id=products.category_id'),
+																 'conditions' => array('categories.id' => $searchCategoryId),
+																 'order_by' => array('created_at' => 'DESC'),
+																 'start' => $start,
+																 'limit' => $config['per_page']) );	
+																																											
+			$config['total_rows'] = $this->product_model->getRows( array('joins' => array('categories' => 'categories.id=products.category_id'),
+																     'conditions' => array('categories.name' => $searchCategoryId)) );		
+			
+			$data['category_id'] = $searchCategoryId;				
+		}
+		
+				
 		$this->pagination->initialize($config);							
 		$data['pagination'] = $this->pagination->create_links();
 			 
@@ -200,8 +219,7 @@ class Products extends CI_Controller {
 		}
 		
 	}
-	
-	
+		
     public function price_check($val) {
 		$val = floatval($val);
         if (!is_float($val) ) {

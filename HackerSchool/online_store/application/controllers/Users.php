@@ -50,6 +50,19 @@ class Users extends CI_Controller {
             redirect('/users/login/');
         }
 	}
+	
+	public function cart() {
+		$data = array();
+        $data['title'] = "Количка";
+        if($this->session->userdata('isUserLoggedIn')){
+			$this->load->model('product_model');
+            $data['products'] = $this->product_model->getRows(array('select' => array('products.name', 'products.price_leva', 'products.image'), 
+																'joins' => array('cart' => 'cart.product_id = products.id', 'users' => 'users.id = cart.user_id')));
+            $this->load->view('cart', $data);
+        } else {
+            redirect('/users/login/');
+        }
+	}
     
     public function login() {
 		
