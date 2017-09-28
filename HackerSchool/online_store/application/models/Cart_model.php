@@ -136,12 +136,11 @@ class Cart_model extends CI_Model {
         }
         
         if(array_key_exists("id", $params)) {
-            $this->db->where('id', $params['id']);
-            $delete = $this->db->delete($this->tableName);
-            return $delete;
-        } else {
-			return FALSE;
-		}  
+            $this->db->where('id', $params['id']);                      
+        }       
+		
+		$delete = $this->db->delete($this->tableName);
+		return $delete;
 	}
 
 

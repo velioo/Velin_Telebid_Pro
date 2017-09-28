@@ -21,10 +21,11 @@ class Cart extends CI_Controller {
 			$product['user_id'] = $this->session->userdata('userId');
 			$insert = $this->cart_model->insert($product);
 			
-			if($insert) echo 1; else echo 0;
+			if($insert) echo true; else echo false;
 		
 		} else {
-			redirect('/users/login/');
+			echo 'login';
+			//redirect('/users/login/');
 		}
 	}
 	
@@ -32,7 +33,7 @@ class Cart extends CI_Controller {
 	public function remove() {
 		if($this->session->userdata('isUserLoggedIn')) {
 			$delete = $this->cart_model->delete(array('conditions' => array('product_id' => $this->input->post('product_id'), 'user_id' => $this->session->userdata('userId'))));			
-			if($delete) echo 1; else echo 0;	
+			if($delete) echo true; else echo false;	
 		} else {
 			redirect('/users/login/');
 		}
@@ -40,13 +41,14 @@ class Cart extends CI_Controller {
 	
 	public function cart_count_price() {
 		if($this->session->userdata('isUserLoggedIn')) {
-			$result = $this->cart_model->getRows(array('select' => array('COUNT(products.price_leva) as count', 'SUM(products.price_leva) as price_leva'), 
+			$result = $this->cart_model->getRows(array('select' => array('COUNT(products.price_leva) as count', 'IFNULL(SUM(products.price_leva), 0) as price_leva'), 
 													   'joins' => array('products' => 'products.id = cart.product_id'), 
 													   'conditions' => array('cart.user_id' => $this->session->userdata('userId'))));
 			header('Content-Type:application/json');										   
 			echo json_encode($result);
 		} else {
-			redirect('/users/login/');
+			echo false;
+			//redirect('/users/login/');
 		}
 	}
 	

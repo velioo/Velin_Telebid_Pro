@@ -44,6 +44,10 @@
 			  <?php echo form_error('name','<span class="help-block">','</span>'); ?>
 			</div>
 			<div class="form-group">
+				<input type="text" class="form-control" name="last_name" placeholder="Фамилия" required="" value="<?php echo !empty($user['last_name']) ? htmlspecialchars($user['last_name'], ENT_QUOTES) : ''; ?>">
+			  <?php echo form_error('last_name','<span class="help-block">','</span>'); ?>
+			</div>
+			<div class="form-group">
 				<input type="email" class="form-control" name="email" placeholder="Имейл" required="" value="<?php echo !empty($user['email']) ? htmlspecialchars($user['email'], ENT_QUOTES) : ''; ?>">
 			  <?php echo form_error('email','<span class="help-block">','</span>'); ?>
 			</div>

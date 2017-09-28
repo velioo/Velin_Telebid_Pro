@@ -1,66 +1,139 @@
 <?php require 'header.php'; ?>
 
+<script src="<?php echo asset_url() . "js/phone_form.js"; ?>"></script>
+
+<script type="text/javascript">
+
+	function getCountries() {
+		var countries = <?php echo json_encode($countries); ?>;
+		return countries;
+	}
+
+</script>
+
 <div id="body">
-<div id="wrap" style="width: 80%;">
-<h2>Регистрация</h2>
-    <form action="<?php echo site_url("users/registration"); ?>" method="post">
-        <div class="form-group">
-            <input type="text" class="form-control" name="name" placeholder="Име" required="" value="<?php echo !empty($user['name']) ? htmlspecialchars($user['name'], ENT_QUOTES) : ''; ?>">
-          <?php echo form_error('name','<span class="help-block">','</span>'); ?>
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control" name="email" placeholder="Имейл" required="" value="<?php echo !empty($user['email']) ? htmlspecialchars($user['email'], ENT_QUOTES) : ''; ?>">
-          <?php echo form_error('email','<span class="help-block">','</span>'); ?>
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control" name="phone" placeholder="Телефон" value="<?php echo !empty($user['phone']) ? htmlspecialchars($user['phone'], ENT_QUOTES) : ''; ?>">
-            <?php echo form_error('phone','<span class="help-block">','</span>'); ?>
-        </div>
-         <div class="form-group">
-            <input type="text" class="form-control" name="country" placeholder="Държава" value="<?php echo !empty($user['country']) ? htmlspecialchars($user['country'], ENT_QUOTES) : ''; ?>">
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control" name="region" placeholder="Регион" value="<?php echo !empty($user['region']) ? htmlspecialchars($user['region'], ENT_QUOTES) : ''; ?>">
-        </div>
-         <div class="form-group">
-            <input type="text" class="form-control" name="street_address" placeholder="Адрес" value="<?php echo !empty($user['street_address']) ? htmlspecialchars($user['street_address'], ENT_QUOTES) : ''; ?>">
-        </div>
-        <div class="form-group">
-          <input type="password" class="form-control" name="password" placeholder="Парола" required="">
-          <?php echo form_error('password','<span class="help-block">','</span>'); ?>
-        </div>
-        <div class="form-group">
-          <input type="password" class="form-control" name="conf_password" placeholder="Потвърждение на паролата" required="">
-          <?php echo form_error('conf_password','<span class="help-block">','</span>'); ?>
-        </div>
-        <div class="form-group">
+<div id="wrap" style="width: 100%;">
+<h2 style="text-align:center; margin-right: 15%;">Регистрация</h2></br></br>
+    <form action="<?php echo site_url("users/registration"); ?>" method="post" class="form-horizontal" style="width: 90%;margin:0 auto;">
+		<div class="form-group">
+		  <label class="col-sm-1 control-label" for="name">Име*:</label>
+		  <div class="col-sm-8">
+			<input type="text" class="form-control" id="name" name="name" value="<?php echo !empty($user['name']) ? htmlspecialchars($user['name'], ENT_QUOTES) : ''; ?>">
+			<span class="glyphicon glyphicon-ok form-control-feedback"></span>		
+			 <?php echo form_error('name','<span class="help-block">','</span>'); ?>	  
+		  </div>
+		</div>
+		
+		<div class="form-group">
+		  <label class="col-sm-1 control-label" for="last_name">Фамилия:</label>
+		  <div class="col-sm-8">
+			<input type="text" class="form-control" id="last_name" name="last_name" value="<?php echo !empty($user['last_name']) ? htmlspecialchars($user['last_name'], ENT_QUOTES) : ''; ?>">
+			<span class="glyphicon glyphicon-ok form-control-feedback"></span>		
+			 <?php echo form_error('last_name','<span class="help-block">','</span>'); ?>	  
+		  </div>
+		</div>
+		
+		<div class="form-group">
+		  <label class="col-sm-1 control-label" for="email">Имейл*:</label>
+		  <div class="col-sm-8">
+			<input type="text" class="form-control" id="email" name="email" value="<?php echo !empty($user['email']) ? htmlspecialchars($user['email'], ENT_QUOTES) : ''; ?>">
+			<span class="glyphicon glyphicon-ok form-control-feedback"></span>
+			<?php echo form_error('email','<span class="help-block">','</span>'); ?>
+		  </div>
+		</div>
+		
+		<div class="form-group">
+		  <label class="col-sm-1 control-label" for="phone" id="phone_label">Телефон*: </label>
+		  <div class="col-sm-8">
+			<input type="text" class="form-control" id="phone" name="phone" value="<?php echo !empty($user['phone']) ? htmlspecialchars($user['phone'], ENT_QUOTES) : ''; ?>">
+			<span class="glyphicon glyphicon-ok form-control-feedback"></span>
+			<?php echo form_error('phone','<span class="help-block">','</span>'); ?>
+		  </div>
+		</div>
+		
+		<div class="form-group">
+		  <label class="col-sm-1 control-label" for="country">Държава:</label>
+		  <div class="col-sm-8">
+			 <select name="country" id="country" class="form-control">
+				<?php foreach($countries as $country) { ?>
+					<option value="<?php echo htmlentities($country['nicename']); ?>" <?php if(isset($user['country'])) { echo ($country['nicename'] == $user['country']) ? 'selected' : ''; }?> ><?php echo htmlentities($country['nicename']); ?></option>
+				<?php } ?>
+			 </select> 
+			<?php echo form_error('country','<span class="help-block">','</span>'); ?>
+		  </div>
+		</div>
+		
+		<div class="form-group">
+		  <label class="col-sm-1 control-label" for="region">Регион:</label>
+		  <div class="col-sm-8">
+			<input type="text" class="form-control" id="region" name="region" value="<?php echo !empty($user['region']) ? htmlspecialchars($user['region'], ENT_QUOTES) : ''; ?>">
+			<span class="glyphicon glyphicon-ok form-control-feedback"></span>
+			<?php echo form_error('region','<span class="help-block">','</span>'); ?>
+		  </div>
+		</div>
+		
+		<div class="form-group">
+		  <label class="col-sm-1 control-label" for="address">Адрес:</label>
+		  <div class="col-sm-8">
+			<input type="text" class="form-control" id="address" name="street_address" value="<?php echo !empty($user['street_address']) ? htmlspecialchars($user['street_address'], ENT_QUOTES) : ''; ?>">
+			<span class="glyphicon glyphicon-ok form-control-feedback"></span>
+			<?php echo form_error('street_address','<span class="help-block">','</span>'); ?>
+		  </div>
+		</div>
+		
+		<div class="form-group">
+		  <label class="col-sm-1 control-label" for="password">Парола*:</label>
+		  <div class="col-sm-8">
+			<input type="password" class="form-control" id="password" name="password">
+			<span class="glyphicon glyphicon-ok form-control-feedback"></span>
+			<?php echo form_error('password','<span class="help-block">','</span>'); ?>
+		  </div>
+		</div>
+		
+		<div class="form-group">
+		  <label class="col-sm-1 control-label" for="conf_password">Потвърди парола*:</label>
+		  <div class="col-sm-8">
+			<input type="password" class="form-control" id="conf_password" name="conf_password">
+			<span class="glyphicon glyphicon-ok form-control-feedback"></span>
+			<?php echo form_error('conf_password','<span class="help-block">','</span>'); ?>
+		  </div>
+		</div>
+		
+		<div class="form-group">
             <?php
-            if(!empty($user['gender']) && $user['gender'] == 'Female'){
+            if(!empty($user['gender']) && $user['gender'] == 'Another'){
+                $fcheck = '';
+                $mcheck = '';
+                $acheck = 'checked="checked"';
+            } elseif(!empty($user['gender']) && $user['gender'] == 'Female'){
                 $fcheck = 'checked="checked"';
                 $mcheck = '';
-            }else{
-                $mcheck = 'checked="checked"';
+                $acheck = '';
+            } else {
+				$acheck = '';
                 $fcheck = '';
-            }
+                $mcheck = 'checked="checked"';
+			}
             ?>
-            <div class="radio">
+            <label class="col-sm-1 control-label">Пол:</label>
+
                 <label>
                 <input type="radio" name="gender" value="Male" <?php echo $mcheck; ?>>
                 Мъж
-                </label>
-            </div>
-            <div class="radio">
+                </label>            
                 <label>
                   <input type="radio" name="gender" value="Female" <?php echo $fcheck; ?>>
                   Жена
                 </label>
-            </div>
-        </div>
-        <div class="form-group">
-            <input type="submit" name="registrSubmit" class="btn-primary" value="Регистрация"/>
-        </div>
-    </form>
-    <p class="footInfo">Вече имаш профил? <a href="<?php echo base_url(); ?>users/login">Влез</a></p>       
+                <label>
+                  <input type="radio" name="gender" value="Another" <?php echo $acheck; ?>>
+                  Друго
+                </label>
+        </div></br>     
+        <div class="form-group" style="margin-left: 50px;">
+			<button type="submit" value="Регистрация" id="registrSubmit" name="registrSubmit" class="btn btn-primary" style="width: 70%">Регистрация</button>
+        </div>   
+    </form>    
 </div>
 </div>
 

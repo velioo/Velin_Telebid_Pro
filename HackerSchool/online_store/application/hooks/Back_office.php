@@ -11,11 +11,11 @@ class Back_office {
     public function index() {
 		$route = $this->ci->router->fetch_class();
 		$method = $this->ci->router->fetch_method();
-		if( ($route === 'employees') && (!$this->ci->session->userdata('isEmployeeLoggedIn')) && ($method !== 'login')) {
+		if( ($route === 'employees') && (!$this->ci->session->userdata('isEmployeeLoggedIn')) && ($method !== 'login') ) {
             redirect('employees/login');
         }
         
-        if( ($route === 'products') && (!$this->ci->session->userdata('isEmployeeLoggedIn')) ) {
+        if( ($route === 'products') && (!$this->ci->session->userdata('isEmployeeLoggedIn')) && ($method !== 'search') ) {
             redirect('employees/login');
         }
 	}
