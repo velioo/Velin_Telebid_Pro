@@ -182,3 +182,22 @@ html,body{
 .col-sm-8 {
 	margin-left: 30px;
 }
+
+.login_register_form {
+	width: 90%;
+	margin:0 auto;
+}
+
+.form_submit {
+
+}
+
+.form_submit_button.register {
+	width: 70%;
+	margin-left: 5%;
+}
+
+.form_submit_button.login {
+	margin-left: 130px;
+	width: 20%;stat
+}

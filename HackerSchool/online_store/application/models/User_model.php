@@ -98,6 +98,7 @@ class User_model extends CI_Model {
 	}
 
 	public function insert($data = array()) {
+		  
 		
 		$insert = $this->db->insert($this->tableName, $data);
 		

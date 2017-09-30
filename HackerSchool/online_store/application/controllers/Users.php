@@ -72,29 +72,18 @@ class Users extends CI_Controller {
         $data['title'] = "Login";
         
         if($this->input->post('loginSubmit')) {
-			
-            $this->form_validation->set_rules('email', 'Email', 'required|valid_email');
-            $this->form_validation->set_rules('password', 'password', 'required');
-            
-            if ($this->form_validation->run() == true) {
-                $params['returnType'] = 'single';
-                $params['conditions'] = array(
-                    'email' => $this->input->post('email'),
-                    'password' => hash("sha256", $this->input->post('password'))                   
-                );
-                
-                $checkLogin = $this->user_model->getRows($params);
-                
-                if($checkLogin){
-					
-                    $this->session->set_userdata('isUserLoggedIn',TRUE);
-                    $this->session->set_userdata('userId', $checkLogin['id']);
-                    redirect('/welcome/');
-                    
-                } else{
-                    $this->session->set_userdata('error_msg', 'Грешен имейл или парола');
-                }               
-            }
+				
+			$checkLogin = $this->user_model->getRows(array('select' => array('password', 'salt', 'id'), 'conditions' => array('email' => $this->input->post('email')), 'returnType' => 'single'));
+
+			if($checkLogin && ((hash("sha256", $this->input->post('password') . $checkLogin['salt'])) === $checkLogin['password'])) {								
+				
+				$this->session->set_userdata('isUserLoggedIn',TRUE);
+				$this->session->set_userdata('userId', $checkLogin['id']);
+				redirect('/welcome/');
+				
+			} else{
+				$this->session->set_userdata('error_msg_timeless', 'Wrong email or password.');
+			}                 
             
             $this->load->view('login', $data);
             
@@ -121,14 +110,18 @@ class Users extends CI_Controller {
             $this->form_validation->set_rules('country', 'Country', 'max_length[64]');
             $this->form_validation->set_rules('region', 'Region', 'max_length[64]');
             $this->form_validation->set_rules('street_address', 'Street Address', 'max_length[255]');
-            $this->form_validation->set_rules('password', 'password', 'required|max_length[255]');
-            $this->form_validation->set_rules('conf_password', 'confirm password', 'required|matches[password]');
+            $this->form_validation->set_rules('password', 'password', 'required|callback_password_validate|max_length[255]');
+            $this->form_validation->set_rules('conf_password', 'confirm password', 'required|matches[password]|max_length[255]');
+            $this->form_validation->set_rules('g-recaptcha-response','Captcha','callback_recaptcha');
+
+			$salt = bin2hex(random_bytes(32));
 
             $userData = array(
                 'name' => $this->input->post('name'),
                 'last_name' => $this->input->post('last_name'),
                 'email' => $this->input->post('email'),
-                'password' => hash("sha256", $this->input->post('password')),
+                'password' => hash("sha256", $this->input->post('password') . $salt),
+                'salt' => $salt,
                 'gender' => $this->input->post('gender'),
                 'phone' => 	$this->input->post('phone'),
                 'country' => $this->input->post('country'),
@@ -136,7 +129,7 @@ class Users extends CI_Controller {
                 'street_address' => $this->input->post('street_address')
             );
 
-            if($this->form_validation->run() == true) {
+            if($this->form_validation->run() === TRUE) {
 				
 				$userData['phone'] = preg_replace("/[^0-9]/","", $userData['phone']);
 				
@@ -165,13 +158,16 @@ class Users extends CI_Controller {
 		
 		if($this->input->post('passwordSubmit')) {
 			
-            $this->form_validation->set_rules('password', 'password', 'required');
-            $this->form_validation->set_rules('conf_password', 'confirm password', 'required|matches[password]');
+            $this->form_validation->set_rules('old_password', 'Old password', 'required|callback_password_check|max_length[255]');
+            $this->form_validation->set_rules('password', 'Password', 'required|max_length[255]|callback_password_validate|max_length[255]');
+            $this->form_validation->set_rules('conf_password', 'confirm password', 'required|matches[password]|max_length[255]');
             
-            if($this->form_validation->run() == true) {
+            if($this->form_validation->run() === TRUE) {
+				
+				$salt = bin2hex(random_bytes(32));
 				
 				$params = array(
-					'set' => array('password' => hash("sha256", $this->input->post('password'))), 
+					'set' => array('password' => hash("sha256", $this->input->post('password') . $salt), 'salt' => $salt), 
 					'conditions' => array('id' => $this->session->userdata('userId'))
 				);
 					
@@ -201,7 +197,7 @@ class Users extends CI_Controller {
             $this->form_validation->set_rules('last_name', 'Last Name', 'max_length[128]');
             $this->form_validation->set_rules('email', 'Email', 'required|valid_email|max_length[64]|callback_email_check_without_current');
             
-            if($this->form_validation->run() == true) {
+            if($this->form_validation->run() === TRUE) {
 				
 				$params = array(
 					'set' => array('name' => $this->input->post('name'), 'last_name' => $this->input->post('last_name'), 'email' => $this->input->post('email')), 
@@ -234,7 +230,7 @@ class Users extends CI_Controller {
             $this->form_validation->set_rules('region', 'Region', 'max_length[64]');
             $this->form_validation->set_rules('street_address', 'Street Address', 'max_length[255]');
             
-            if($this->form_validation->run() == true) {
+            if($this->form_validation->run() === TRUE) {
 				
 				$params = array(
 					'set' => array('gender' => $this->input->post('gender'),
@@ -261,6 +257,59 @@ class Users extends CI_Controller {
 		$this->details();	
 
 	}
+
+	public function reset_page() {
+		$data = array();      
+        $data['title'] = "Reset password";
+        
+        if($this->input->post('resetSubmit')) {
+	
+		$this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email|callback_email_check_reverse');
+		
+			if ($this->form_validation->run() === TRUE) {
+
+				$temp_pass = $salt = bin2hex(random_bytes(64));
+					
+				$this->load->library('email', array('mailtype'=>'html'));
+				$this->email->from('vanime.staff@gmail.com', "Computer Store Reset Password");
+				$this->email->to(htmlentities($this->input->post('email'), ENT_QUOTES));
+				$this->email->subject("Reset your Password");
+					
+				$message = "<p>This email has been sent as a request to reset your password</p>";
+				$message .= "<p><a href='".site_url("users/reset_password/$temp_pass")."'>Click here </a>if you want to reset your password, if not, then ignore</p>";
+					
+				$this->email->message($message);
+					
+				if($this->email->send()){
+		
+					$user_id = $this->users_model->getRows(array('conditions' => array('email' => $this->input->post('email')), 'returnType' => 'single'));					
+						
+					if($user_id) {						
+						$this->users_model->insert(array('table' => 'temp_codes', ''));
+						$data = array('header' => "Email was sent to {$this->input->post('email')}. <br/>Follow the instructions in it to reset your password.");
+						$this->login_page($data);
+					} else {
+						$data = array('header' => "There was an internal error...");
+						$this->login_page($data);
+					}
+						
+				} else {
+					$data = array('header' => "Failed to send email...");
+					$this->login_page($data);
+				}
+				$data['email_sent'] = TRUE;  
+			}
+			
+			    
+            
+            $this->load->view('forgotten_password', $data);
+            
+        } elseif ($this->session->userdata('isUserLoggedIn')) {
+			redirect('/users/account/');
+		} else {
+			$this->load->view('forgotten_password', $data);
+		}
+	}
     
     public function logout() {
 		if ($this->session->userdata('isUserLoggedIn')) {
@@ -283,12 +332,75 @@ class Users extends CI_Controller {
         $checkEmail = $this->user_model->getRows($params);
         
         if($checkEmail > 0){
-            $this->form_validation->set_message('email_check', 'Имейлът е зает.');
+            $this->form_validation->set_message('email_check', 'The email is already taken.');
             return FALSE;
         } else {
             return TRUE;
         }
     }
+   
+     public function email_check_reverse($str) {
+		
+        $params['returnType'] = 'count';
+        $params['conditions'] = array('email' => $str);
+        
+        $checkEmail = $this->user_model->getRows($params);
+        
+        if($checkEmail > 0){
+             return TRUE;
+        } else {        
+            $this->form_validation->set_message('email_check', 'The email is already taken.');
+            return FALSE;
+        }
+    }
+   
+    public function password_check($str) {
+		
+		$checkLogin = $this->user_model->getRows(array('select' => array('password', 'salt'), 'conditions' => array('id' => $this->session->userdata('userId')), 'returnType' => 'single'));
+
+		if($checkLogin && ((hash("sha256", $str . $checkLogin['salt'])) === $checkLogin['password'])) {			
+			return TRUE;
+		} else {
+			$this->form_validation->set_message('password_check', 'Wrong password.');
+            return FALSE;
+		}
+    }     
+	
+	public function password_validate($str) {
+		
+		if(!preg_match("/^\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$/", $str)) {
+			$this->form_validation->set_message('password_validate', 'The password must be at least 8 characters long, have at least 1 lowercase letter, 1 uppercase letter and 1 number.');
+			return FALSE;
+		} else {
+			return TRUE;
+		}
+		
+	}
+	
+	public function recaptcha($str='') {
+		$google_url = "https://www.google.com/recaptcha/api/siteverify";
+		$secret = SECRET_CODE_RECAPTCHA;
+	    $ip = $_SERVER['REMOTE_ADDR'];
+		$url = $google_url."?secret=" . $secret . "&response=" . $str . "&remoteip=" . $ip;
+		$curl = curl_init();
+		curl_setopt($curl, CURLOPT_URL, $url);
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($curl, CURLOPT_TIMEOUT, 10);
+		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+		
+		$res = curl_exec($curl);
+		curl_close($curl);
+		$res= json_decode($res, true);
+
+		if($res['success']) {
+			return TRUE;
+		}
+		else {
+			$this->form_validation->set_message('recaptcha', 'The reCAPTCHA field is telling me that you are a robot. Shall we give it another try?');
+			return FALSE;
+		}
+   }
     
     public function email_check_without_current($str) {
 		
@@ -300,7 +412,7 @@ class Users extends CI_Controller {
         $result = $this->user_model->getRows($params);
         
         if($result && $result['email'] != $user_email){
-            $this->form_validation->set_message('email_check_without_current', 'Имейлът е зает.');
+            $this->form_validation->set_message('email_check_without_current', 'The email is already taken.');
             return FALSE;
         } else {
             return TRUE;
@@ -316,7 +428,7 @@ class Users extends CI_Controller {
 		} elseif(preg_match("/^\d{10,14}$/", $str)) {
 			return TRUE;
 		} else {
-			$this->form_validation->set_message('validate_phone', 'Въведете валиден телефонен номер.');
+			$this->form_validation->set_message('validate_phone', 'Invalid phone number.');
 			return FALSE;
 		}
 	}

@@ -13,6 +13,7 @@
 <script src="<?php echo asset_url() . "js/cart.js"; ?>"></script>
 <link rel="stylesheet" href="<?php echo asset_url() . "css/main.css"; ?>"> 
  
+<script src='https://www.google.com/recaptcha/api.js'></script>
 </head>
 <body>
 	

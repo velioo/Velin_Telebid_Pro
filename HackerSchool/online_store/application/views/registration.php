@@ -12,46 +12,46 @@
 </script>
 
 <div id="body">
-<div id="wrap" style="width: 100%;">
+<div id="wrap">
 <h2 style="text-align:center; margin-right: 15%;">Регистрация</h2></br></br>
-    <form action="<?php echo site_url("users/registration"); ?>" method="post" class="form-horizontal" style="width: 90%;margin:0 auto;">
-		<div class="form-group">
+    <form action="<?php echo site_url("users/registration"); ?>" method="post" class="form-horizontal login_register_form">
+		<div class="form-group <?php if(form_error('name') == true) { echo "has-error has-feedback"; } ?>">
 		  <label class="col-sm-1 control-label" for="name">Име*:</label>
 		  <div class="col-sm-8">
 			<input type="text" class="form-control" id="name" name="name" value="<?php echo !empty($user['name']) ? htmlspecialchars($user['name'], ENT_QUOTES) : ''; ?>">
-			<span class="glyphicon glyphicon-ok form-control-feedback"></span>		
+			<span class="glyphicon glyphicon-remove form-control-feedback" <?php if(form_error('name') == true) { echo "style='display:inline-block;'"; } ?>></span>		
 			 <?php echo form_error('name','<span class="help-block">','</span>'); ?>	  
 		  </div>
 		</div>
 		
-		<div class="form-group">
+		<div class="form-group <?php if(form_error('last_name') == true) { echo "has-error has-feedback"; } ?>">
 		  <label class="col-sm-1 control-label" for="last_name">Фамилия:</label>
 		  <div class="col-sm-8">
 			<input type="text" class="form-control" id="last_name" name="last_name" value="<?php echo !empty($user['last_name']) ? htmlspecialchars($user['last_name'], ENT_QUOTES) : ''; ?>">
-			<span class="glyphicon glyphicon-ok form-control-feedback"></span>		
+			<span class="glyphicon glyphicon-remove form-control-feedback" <?php if(form_error('last_name') == true) { echo "style='display:inline-block;'"; } ?>></span>		
 			 <?php echo form_error('last_name','<span class="help-block">','</span>'); ?>	  
 		  </div>
 		</div>
 		
-		<div class="form-group">
+		<div class="form-group <?php if(form_error('email') == true) { echo "has-error has-feedback"; } ?>">
 		  <label class="col-sm-1 control-label" for="email">Имейл*:</label>
 		  <div class="col-sm-8">
 			<input type="text" class="form-control" id="email" name="email" value="<?php echo !empty($user['email']) ? htmlspecialchars($user['email'], ENT_QUOTES) : ''; ?>">
-			<span class="glyphicon glyphicon-ok form-control-feedback"></span>
+			<span class="glyphicon glyphicon-remove form-control-feedback" <?php if(form_error('email') == true) { echo "style='display:inline-block;'"; } ?>></span>
 			<?php echo form_error('email','<span class="help-block">','</span>'); ?>
 		  </div>
 		</div>
 		
-		<div class="form-group">
+		<div class="form-group <?php if(form_error('phone') == true) { echo "has-error has-feedback"; } ?>">
 		  <label class="col-sm-1 control-label" for="phone" id="phone_label">Телефон*: </label>
 		  <div class="col-sm-8">
 			<input type="text" class="form-control" id="phone" name="phone" value="<?php echo !empty($user['phone']) ? htmlspecialchars($user['phone'], ENT_QUOTES) : ''; ?>">
-			<span class="glyphicon glyphicon-ok form-control-feedback"></span>
+			<span class="glyphicon glyphicon-remove form-control-feedback" <?php if(form_error('phone') == true) { echo "style='display:inline-block;'"; } ?>></span>
 			<?php echo form_error('phone','<span class="help-block">','</span>'); ?>
 		  </div>
 		</div>
 		
-		<div class="form-group">
+		<div class="form-group <?php if(form_error('country') == true) { echo "has-error has-feedback"; } ?>">
 		  <label class="col-sm-1 control-label" for="country">Държава:</label>
 		  <div class="col-sm-8">
 			 <select name="country" id="country" class="form-control">
@@ -63,38 +63,38 @@
 		  </div>
 		</div>
 		
-		<div class="form-group">
+		<div class="form-group <?php if(form_error('region') == true) { echo "has-error has-feedback"; } ?>">
 		  <label class="col-sm-1 control-label" for="region">Регион:</label>
 		  <div class="col-sm-8">
 			<input type="text" class="form-control" id="region" name="region" value="<?php echo !empty($user['region']) ? htmlspecialchars($user['region'], ENT_QUOTES) : ''; ?>">
-			<span class="glyphicon glyphicon-ok form-control-feedback"></span>
+			<span class="glyphicon glyphicon-remove form-control-feedback" <?php if(form_error('region') == true) { echo "style='display:inline-block;'"; } ?>></span>
 			<?php echo form_error('region','<span class="help-block">','</span>'); ?>
 		  </div>
 		</div>
 		
-		<div class="form-group">
+		<div class="form-group <?php if(form_error('street_address') == true) { echo "has-error has-feedback"; } ?>">
 		  <label class="col-sm-1 control-label" for="address">Адрес:</label>
 		  <div class="col-sm-8">
 			<input type="text" class="form-control" id="address" name="street_address" value="<?php echo !empty($user['street_address']) ? htmlspecialchars($user['street_address'], ENT_QUOTES) : ''; ?>">
-			<span class="glyphicon glyphicon-ok form-control-feedback"></span>
+			<span class="glyphicon glyphicon-remove form-control-feedback" <?php if(form_error('streete_address') == true) { echo "style='display:inline-block;'"; } ?>></span>
 			<?php echo form_error('street_address','<span class="help-block">','</span>'); ?>
 		  </div>
 		</div>
 		
-		<div class="form-group">
+		<div class="form-group <?php if(form_error('password') == true) { echo "has-error has-feedback"; } ?>">
 		  <label class="col-sm-1 control-label" for="password">Парола*:</label>
 		  <div class="col-sm-8">
 			<input type="password" class="form-control" id="password" name="password">
-			<span class="glyphicon glyphicon-ok form-control-feedback"></span>
+			<span class="glyphicon glyphicon-remove form-control-feedback" <?php if(form_error('password') == true) { echo "style='display:inline-block;'"; } ?>></span>
 			<?php echo form_error('password','<span class="help-block">','</span>'); ?>
 		  </div>
 		</div>
 		
-		<div class="form-group">
+		<div class="form-group <?php if(form_error('conf_password') == true) { echo "has-error has-feedback"; } ?>">
 		  <label class="col-sm-1 control-label" for="conf_password">Потвърди парола*:</label>
 		  <div class="col-sm-8">
 			<input type="password" class="form-control" id="conf_password" name="conf_password">
-			<span class="glyphicon glyphicon-ok form-control-feedback"></span>
+			<span class="glyphicon glyphicon-remove form-control-feedback" <?php if(form_error('conf_password') == true) { echo "style='display:inline-block;'"; } ?>></span>
 			<?php echo form_error('conf_password','<span class="help-block">','</span>'); ?>
 		  </div>
 		</div>
@@ -129,10 +129,13 @@
                   <input type="radio" name="gender" value="Another" <?php echo $acheck; ?>>
                   Друго
                 </label>
-        </div></br>     
-        <div class="form-group" style="margin-left: 50px;">
-			<button type="submit" value="Регистрация" id="registrSubmit" name="registrSubmit" class="btn btn-primary" style="width: 70%">Регистрация</button>
-        </div>   
+        </div></br>  
+        <div class="g-recaptcha" data-sitekey="6LeBrTIUAAAAAJqfzWbZvxPv8SFxfW8GMjxCynhO"></div>
+		<?php echo form_error('g-recaptcha-response','<span class="help-block">','</span>'); ?>
+		</br></br>
+        <div class="form-group form_submit">
+			<button type="submit" value="Регистрация" id="registrSubmit" name="registrSubmit" class="btn btn-primary form_submit_button register">Регистрация</button>
+        </div>  
     </form>    
 </div>
 </div>

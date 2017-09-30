@@ -17,32 +17,21 @@ class Employees extends CI_Controller {
 	
 	public function login() {			
 		$data = array();      
-        $data['title'] = 'Employee login';
+        $data['title'] = 'Employee login';               
         
         if($this->input->post('loginSubmit')) {
 			
-            $this->form_validation->set_rules('username', 'Username', 'required');
-            $this->form_validation->set_rules('password', 'Password', 'required');
-            
-            if ($this->form_validation->run() == true) {
-                $params['returnType'] = 'single';
-                $params['conditions'] = array(
-                    'username' => $this->input->post('username'),
-                    'password' => hash("sha256", $this->input->post('password'))                   
-                );
-                
-                $checkLogin = $this->employee_model->getRows($params);
-                
-                if($checkLogin){
-					
-                    $this->session->set_userdata('isEmployeeLoggedIn',TRUE);
-                    $this->session->set_userdata('employeeId', $checkLogin['id']);
-                    redirect('/employees/dashboard/');
-                    
-                } else{
-                    $this->session->set_userdata('error_msg', 'Wrong username or password, please try again.');
-                }               
-            }
+			$checkLogin = $this->employee_model->getRows(array('select' => array('password', 'salt', 'id'), 'conditions' => array('username' => $this->input->post('username')), 'returnType' => 'single'));
+
+			if($checkLogin && ((hash("sha256", $this->input->post('password') . $checkLogin['salt'])) === $checkLogin['password'])) {								
+				
+				$this->session->set_userdata('isEmployeeLoggedIn',TRUE);
+				$this->session->set_userdata('employeeId', $checkLogin['id']);
+				redirect('/employees/dashboard/');
+				
+			} else {
+				$this->session->set_userdata('error_msg_timeless', 'Wrong email or password.');
+			}                 
             
             $this->load->view('employee_login', $data);
             
