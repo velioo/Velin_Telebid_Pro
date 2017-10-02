@@ -6,6 +6,7 @@
 	 <div class="vertical-menu">
 	  <a href="<?php echo site_url("users/cart"); ?>">Количка</a>	 
 	  <a href="<?php echo site_url("users/orders"); ?>" class="active">Поръчки</a>
+	  	  <a href="<?php echo site_url("users/payments"); ?>">Плащания</a>	
 	  <a href="<?php echo site_url("users/account"); ?>">Настройки</a>
 	  <a href="<?php echo site_url("users/details"); ?>">Детайли</a>
 	</div>

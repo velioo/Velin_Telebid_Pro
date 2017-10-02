@@ -75,6 +75,10 @@ class Employee_model extends CI_Model {
 						$this->db->order_by($key, $value);
 					}
 				}   
+				
+				if(array_key_exists("group_by", $params)) {
+					$this->db->group_by($params['group_by']);
+				} 
 
 				if(array_key_exists("start", $params) && array_key_exists("limit", $params)) {
 					$this->db->limit($params['limit'], $params['start']);

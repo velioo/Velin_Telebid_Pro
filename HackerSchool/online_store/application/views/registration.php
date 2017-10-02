@@ -13,7 +13,7 @@
 
 <div id="body">
 <div id="wrap">
-<h2 style="text-align:center; margin-right: 15%;">Регистрация</h2></br></br>
+<h2 s>Регистрация</h2></br></br>
     <form action="<?php echo site_url("users/registration"); ?>" method="post" class="form-horizontal login_register_form">
 		<div class="form-group <?php if(form_error('name') == true) { echo "has-error has-feedback"; } ?>">
 		  <label class="col-sm-1 control-label" for="name">Име*:</label>
@@ -55,8 +55,9 @@
 		  <label class="col-sm-1 control-label" for="country">Държава:</label>
 		  <div class="col-sm-8">
 			 <select name="country" id="country" class="form-control">
+				 <option value="" selected="selected">Choose a Country</option>
 				<?php foreach($countries as $country) { ?>
-					<option value="<?php echo htmlentities($country['nicename']); ?>" <?php if(isset($user['country'])) { echo ($country['nicename'] == $user['country']) ? 'selected' : ''; }?> ><?php echo htmlentities($country['nicename']); ?></option>
+					<option value="<?php echo htmlentities($country['nicename']); ?>" <?php if(isset($user['country'])) { echo ($country['nicename'] == $user['country']) ? 'selected' : ''; }?> data-id="<?php echo htmlentities($country['phonecode']); ?>"><?php echo htmlentities($country['nicename']); ?></option>
 				<?php } ?>
 			 </select> 
 			<?php echo form_error('country','<span class="help-block">','</span>'); ?>

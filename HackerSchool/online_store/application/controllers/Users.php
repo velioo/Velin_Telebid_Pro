@@ -123,7 +123,7 @@ class Users extends CI_Controller {
                 'password' => hash("sha256", $this->input->post('password') . $salt),
                 'salt' => $salt,
                 'gender' => $this->input->post('gender'),
-                'phone' => 	$this->input->post('phone'),
+                'phone' => 	str_replace(' ', '', $this->input->post('phone')),
                 'country' => $this->input->post('country'),
                 'region' => $this->input->post('region'),
                 'street_address' => $this->input->post('street_address')
@@ -420,6 +420,8 @@ class Users extends CI_Controller {
     }
     
     public function validate_phone($str) {
+		
+		$str = str_replace(' ', '', $str);
 		
 		if(preg_match("/\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\d{1,14}$/", $str)) {
 			return TRUE;				

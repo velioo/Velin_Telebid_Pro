@@ -2,21 +2,21 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Product_model extends CI_Model {
+class Order_model extends CI_Model {
 
      function __construct() {
-        $this->tableName = 'products';
+		$this->tableName = 'orders';
      }
 
-     function getRows($params = array()) {
-		 
+	 function getRows($params = array()) {
+		
 		if(array_key_exists("custom", $params)) {
 			
 			$query = $this->db->query($params['custom']);			
 			return $query->result_array();
 			
 		} else {
-		
+			
 			if(array_key_exists("select", $params)) {
 				 $this->db->select($params['select']);          
 			} else {
@@ -28,7 +28,7 @@ class Product_model extends CI_Model {
 				$this->db->from($params['table']);
 			} else {
 				$this->db->from($this->tableName);
-			}             			
+			}             
 			
 			if(array_key_exists("joins", $params)) {
 				foreach ($params['joins'] as $key => $value) {
@@ -41,7 +41,7 @@ class Product_model extends CI_Model {
 				$query = $this->db->get();
 				$result = $query->row_array();
 			} else {
-				
+
 				if(array_key_exists("conditions", $params)) {
 					foreach ($params['conditions'] as $key => $value) {
 						$this->db->where($key, $value);
@@ -76,9 +76,10 @@ class Product_model extends CI_Model {
 					}
 				}   
 				
+				
 				if(array_key_exists("group_by", $params)) {
 					$this->db->group_by($params['group_by']);
-				} 
+				}  
 
 				if(array_key_exists("start", $params) && array_key_exists("limit", $params)) {
 					$this->db->limit($params['limit'], $params['start']);
@@ -96,58 +97,66 @@ class Product_model extends CI_Model {
 					$result = ($query->num_rows() > 0) ? $query->result_array() : FALSE;
 				}
 			}
-			
+
 			return $result;
 		}
+	}
 
-        
-    }
-    
-    public function insert($data = array()) {
-        
-        $insert = $this->db->insert($this->tableName, $data);
-        
-        if($insert) {
-            return $this->db->insert_id();
-        } else{
-            return false;
-        }
-    }
-    
-    public function update($params = array()) {
+	public function insert($data = array(), $tableName=null) {
+		 
+		if($tableName  === null) {
+			$insert = $this->db->insert($this->tableName, $data);
+		} else {
+			$insert = $this->db->insert($tableName, $data);
+		}
+
+		if($insert) {
+			return $this->db->insert_id();
+		} else{
+			return false;
+		}
+	}
+
+	public function update($params = array()) {
 		
 		if(array_key_exists("conditions", $params)) {
-            foreach ($params['conditions'] as $key => $value) {
-                $this->db->where($key, $value);
-            }
-        }
-        
-        if(array_key_exists("set", $params)) {
-            $update = $this->db->update($this->tableName, $params['set']);
-            return $update;
-        } else {
+			foreach ($params['conditions'] as $key => $value) {
+				$this->db->where($key, $value);
+			}
+		}
+		
+		if(array_key_exists("set", $params)) {			
+			if(array_key_exists("table", $params)) {
+				$update = $this->db->update($params['table'], $params['set']);
+			} else {
+				$update = $this->db->update($this->tableName, $params['set']);
+			}    
+			return $update;
+		} else {
 			return FALSE;
 		}       
 		
 	}
-	
+
 	public function delete($params = array()) {
 		
 		if(array_key_exists("conditions", $params)) {
-            foreach ($params['conditions'] as $key => $value) {
-                $this->db->where($key, $value);
-            }
-        }
-        
-        if(array_key_exists("id", $params)) {
-            $this->db->where('id', $params['id']);
-            $delete = $this->db->delete($this->tableName);
-            return $delete;
-        } else {
+			foreach ($params['conditions'] as $key => $value) {
+				$this->db->where($key, $value);
+			}
+		}
+		
+		if(array_key_exists("id", $params)) {
+			$this->db->where('id', $params['id']);
+			$delete = $this->db->delete($this->tableName);
+			return $delete;
+		} else {
 			return FALSE;
 		}  
 	}
 
 
 }
+
+
 ?>
