@@ -22,6 +22,10 @@ class Cart_model extends CI_Model {
 			} else {
 				 $this->db->select('*');
 			}
+			
+			if(array_key_exists("distinct", $params)) {
+				 $this->db->distinct();        
+			}
 		   
 			
 			if(array_key_exists("table", $params)) {

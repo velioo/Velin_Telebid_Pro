@@ -42,15 +42,6 @@
 		  </div>
 		</div>
 		
-		<div class="form-group <?php if(form_error('phone') == true) { echo "has-error has-feedback"; } ?>">
-		  <label class="col-sm-1 control-label" for="phone" id="phone_label">Телефон*: </label>
-		  <div class="col-sm-8">
-			<input type="text" class="form-control" id="phone" name="phone" value="<?php echo !empty($user['phone']) ? htmlspecialchars($user['phone'], ENT_QUOTES) : ''; ?>">
-			<span class="glyphicon glyphicon-remove form-control-feedback" <?php if(form_error('phone') == true) { echo "style='display:inline-block;'"; } ?>></span>
-			<?php echo form_error('phone','<span class="help-block">','</span>'); ?>
-		  </div>
-		</div>
-		
 		<div class="form-group <?php if(form_error('country') == true) { echo "has-error has-feedback"; } ?>">
 		  <label class="col-sm-1 control-label" for="country">Държава:</label>
 		  <div class="col-sm-8">
@@ -61,6 +52,15 @@
 				<?php } ?>
 			 </select> 
 			<?php echo form_error('country','<span class="help-block">','</span>'); ?>
+		  </div>
+		</div>
+		
+		<div class="form-group <?php if(form_error('phone') == true) { echo "has-error has-feedback"; } ?>">
+		  <label class="col-sm-1 control-label" for="phone" id="phone_label">Телефон*: </label>
+		  <div class="col-sm-8">
+			<input type="text" class="form-control" id="phone" name="phone" value="<?php echo !empty($user['phone']) ? htmlspecialchars($user['phone'], ENT_QUOTES) : ''; ?>">
+			<span class="glyphicon glyphicon-remove form-control-feedback" <?php if(form_error('phone') == true) { echo "style='display:inline-block;'"; } ?>></span>
+			<?php echo form_error('phone','<span class="help-block">','</span>'); ?>
 		  </div>
 		</div>
 		

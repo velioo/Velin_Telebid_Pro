@@ -2,7 +2,7 @@
 
 <div id="body">
 	
-<h2>Изберете метод за плащане</h2>	
+<h2>Потвърждение на поръчка</h2>	
 	 <div class="vertical-menu">
 	  <a href="<?php echo site_url("users/cart"); ?>">Количка</a>
 	  <a href="<?php echo site_url("users/orders"); ?>">Поръчки</a>
@@ -13,38 +13,31 @@
 	
 	<div class="account-info">
 		<hr>
-		<form action="<?php echo site_url("orders/confirm_order"); ?>" method="post" class="form-horizontal login_register_form">
+		<form action="<?php echo site_url("orders/create_order"); ?>" method="post" class="form-horizontal login_register_form">
 		<div class="cart_products order">								
-			<?php if($payment_methods) { foreach($payment_methods as $p) { if($p['id'] != 3) {?>
-				<div class="radio">
-				<img src="<?php echo asset_url() . "imgs/" . $p['image']; ?>" class="payment_image">
-				  <label><input type="radio" value="<?php echo $p['id']; ?>" name="payment_method" required><?php echo htmlentities($p['name'], ENT_QUOTES); ?></label>
-				</div>
-			<?php }}} ?>
-		
+			<?php if($payment_method) echo "Плащане чрез:</br> "; ?> <img src="<?php echo asset_url() . "imgs/" . htmlentities($payment_method['image'], ENT_QUOTES); ?>" class="cart_product_image confirm"><?php echo htmlentities($payment_method['name'], ENT_QUOTES); ?>
+			<div style="display:inline-block;">
+				<h4>Данни за доставката:</h4>
+				<p>Име на получател: <?php echo htmlentities($userData['name'], ENT_QUOTES) . ' ' . htmlentities($userData['last_name'], ENT_QUOTES); ?></p>
+				<p>Адрес: <?php echo htmlentities($userData['country'], ENT_QUOTES) . ', ' . htmlentities($userData['region'], ENT_QUOTES) . ', ' . htmlentities($userData['street_address'], ENT_QUOTES); ?></p>
+				<p>Телефон за връзка: <?php echo htmlentities($userData['phone_unformatted'], ENT_QUOTES); ?></p>
+				<p>Имейл за връзка: <?php echo htmlentities($userData['email'], ENT_QUOTES); ?></p>
+			</div>
 		</div>	
 		<div class="cart_products items order"</div>
-			<?php $numItems = count($products); $i = 0; if($products) { foreach($products as $p) { ?>
+		<h3 style="text-align:right;">Продукти: </h3>
+			<?php if($products) { foreach($products as $p) { ?>
 				<div class="cart_product order">
 					<div class="cart_product_image_div order"><a href="#"><img src="<?php echo ($p['image'] != '') ? asset_url() . "imgs/" . htmlspecialchars($p['image'], ENT_QUOTES) : ""; ?>" onerror="this.src='<?php echo asset_url() . "imgs/no_image.png" ?>';" class="cart_product_image order"></a></div>
 					<div class="cart_product_name_div order"><p class="cart_product_name order"><?php echo htmlspecialchars($p['name'], ENT_QUOTES); ?></p></div>
 					<div class="cart_product_price order"><p>Цена: <?php echo htmlspecialchars($p['price_leva'], ENT_QUOTES) . " лв."; ?></p></div>						
 				</div>
-				<div class="plus">
-					<?php if(++$i !== $numItems) echo "+"; else echo "="; ?>
-				</div>
 			<?php } echo '<div class="cart_purchase_div"><h3 class="cart_sum">Обща сума: </h3></br></div>'; } ?>
 		</div>
 		<div class="form-group form_submit" style="margin-top:50px;">
-			<button type="submit" value="Избери" id="paymentSubmit" name="paymentSubmit" class="btn btn-primary form_submit_button register">Избери</button>
+			<button type="submit" value="Избери" id="confirmSubmit" name="confirmSubmit" class="btn btn-primary form_submit_button register">Потвърди</button>
         </div>  
-		</form>	
-			<?php
-			if(!empty($this->session->userdata('error_msg'))) {
-				echo '<p class="errorMsg">' . $this->session->userdata('error_msg') . '</p>';
-				$this->session->unset_userdata('error_msg');
-			}
-			?>	
+		</form>		
 	</div>
 </div>
 

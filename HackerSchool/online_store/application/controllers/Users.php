@@ -45,8 +45,32 @@ class Users extends CI_Controller {
 		$data = array();
         $data['title'] = "Orders details";
         if($this->session->userdata('isUserLoggedIn')){
+			$this->load->model('order_model');
             $data['user'] = $this->user_model->getRows(array('id' => $this->session->userdata('userId')));
-            $this->load->view('orders', $data);
+            $data['orders'] = $this->order_model->getRows(array('select' => array('orders.id as order_id',
+																				  'orders.report as report',
+																				  'orders.created_at as order_created_at',
+																				  'orders.amount_leva',
+																				  'statuses.name as status_name',
+																				  'statuses.id as status_id',
+																				  'payment_methods.name as payment_method_name', 
+																				  'payment_methods.image as payment_method_image', 
+																				  'payment_methods.details as payment_method_details'), 
+															    'conditions' => array('user_id' => $this->session->userdata('userId')), 
+															    'joins' => array('statuses' => 'statuses.id = orders.status_id', 
+																				 'payment_methods' => 'payment_methods.id = orders.payment_method_id')));
+	$this->load->view('orders', $data);
+        } else {
+            redirect('/users/login/');
+        }
+	}
+	
+	public function payments() {
+		$data = array();
+        $data['title'] = "Payments";
+        if($this->session->userdata('isUserLoggedIn')){
+            $data['user'] = $this->user_model->getRows(array('id' => $this->session->userdata('userId')));
+            $this->load->view('payments', $data);
         } else {
             redirect('/users/login/');
         }
@@ -57,7 +81,7 @@ class Users extends CI_Controller {
         $data['title'] = "Количка";
         if($this->session->userdata('isUserLoggedIn')){
 			$this->load->model('product_model');
-            $data['products'] = $this->product_model->getRows(array('select' => array('products.name', 'products.price_leva', 'products.image'), 
+            $data['products'] = $this->product_model->getRows(array('select' => array('products.id', 'products.name', 'products.price_leva', 'products.image', 'cart.quantity'), 
 																    'joins' => array('cart' => 'cart.product_id = products.id', 'users' => 'users.id = cart.user_id'),
 																    'conditions' => array('users.id' => $this->session->userdata('userId'))));
             $this->load->view('cart', $data);
@@ -103,13 +127,13 @@ class Users extends CI_Controller {
 
         if($this->input->post('registrSubmit')) {
 
-            $this->form_validation->set_rules('name', 'Name', 'required|max_length[64]');
-            $this->form_validation->set_rules('last_name', 'max_length[128]');
-            $this->form_validation->set_rules('email', 'Email', 'required|valid_email|max_length[64]|callback_email_check');
-            $this->form_validation->set_rules('phone', 'Phone', 'required|max_length[32]|callback_validate_phone');
-            $this->form_validation->set_rules('country', 'Country', 'max_length[64]');
-            $this->form_validation->set_rules('region', 'Region', 'max_length[64]');
-            $this->form_validation->set_rules('street_address', 'Street Address', 'max_length[255]');
+            $this->form_validation->set_rules('name', 'Name', 'trim|required|max_length[64]');
+            $this->form_validation->set_rules('last_name', 'trim|max_length[128]');
+            $this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email|max_length[64]|callback_email_check');
+            $this->form_validation->set_rules('phone', 'Phone', 'trim|required|max_length[32]|callback_validate_phone');
+            $this->form_validation->set_rules('country', 'Country', 'trim|max_length[64]');
+            $this->form_validation->set_rules('region', 'Region', 'trim|max_length[64]');
+            $this->form_validation->set_rules('street_address', 'trim|Street Address', 'max_length[255]');
             $this->form_validation->set_rules('password', 'password', 'required|callback_password_validate|max_length[255]');
             $this->form_validation->set_rules('conf_password', 'confirm password', 'required|matches[password]|max_length[255]');
             $this->form_validation->set_rules('g-recaptcha-response','Captcha','callback_recaptcha');
@@ -124,6 +148,7 @@ class Users extends CI_Controller {
                 'salt' => $salt,
                 'gender' => $this->input->post('gender'),
                 'phone' => 	str_replace(' ', '', $this->input->post('phone')),
+                'phone_unformatted' => $this->input->post('phone'),
                 'country' => $this->input->post('country'),
                 'region' => $this->input->post('region'),
                 'street_address' => $this->input->post('street_address')
@@ -225,21 +250,24 @@ class Users extends CI_Controller {
 		
 		if($this->input->post('infoSubmit')) {
 			
-            $this->form_validation->set_rules('phone', 'Phone', 'required|max_length[32]|callback_validate_phone');
-            $this->form_validation->set_rules('country', 'Country', 'max_length[64]');
-            $this->form_validation->set_rules('region', 'Region', 'max_length[64]');
-            $this->form_validation->set_rules('street_address', 'Street Address', 'max_length[255]');
+            $this->form_validation->set_rules('phone', 'Phone', 'trim|required|max_length[32]|callback_validate_phone');
+            $this->form_validation->set_rules('country', 'Country', 'trim|max_length[64]');
+            $this->form_validation->set_rules('region', 'Region', 'trim|max_length[64]');
+            $this->form_validation->set_rules('street_address', 'Street Address', 'trim|max_length[255]');
             
             if($this->form_validation->run() === TRUE) {
 				
 				$params = array(
 					'set' => array('gender' => $this->input->post('gender'),
-						'phone' => $this->input->post('phone'),
+						'phone' => str_replace(' ', '', $this->input->post('phone')),
+						'phone_unformatted' => $this->input->post('phone'),
 						'country' => $this->input->post('country'),
 						'region' => $this->input->post('region'),
 						'street_address' => $this->input->post('street_address')), 
 					'conditions' => array('id' => $this->session->userdata('userId'))
 				);
+				
+				$params['set']['phone'] = preg_replace("/[^0-9]/","", $params['set']['phone']);
 					
                 $update = $this->user_model->update($params); 
                           
@@ -314,7 +342,10 @@ class Users extends CI_Controller {
     public function logout() {
 		if ($this->session->userdata('isUserLoggedIn')) {
 			$this->load->model('cart_model');
+			$this->load->model('order_model');
 			$this->cart_model->delete(array('conditions' => array('user_id' => $this->session->userdata('userId'))));
+			$statusId = $this->order_model->getRows(array('table' => 'statuses', 'conditions' => array('name' => 'Temporary'), 'returnType' => 'single'))['id'];
+			$this->order_model->delete(array('conditions' => array('user_id' => $this->session->userdata('userId'), 'status_id' => $statusId)));
 			$this->session->unset_userdata('isUserLoggedIn');
 			$this->session->unset_userdata('userId');               
 			//$this->session->sess_destroy();
