@@ -48,6 +48,12 @@ class Order_model extends CI_Model {
 					}
 				}
 				
+				if(array_key_exists("where_in", $params)) {
+					foreach ($params['where_in'] as $key => $value) {
+						$this->db->where_in($key, $value);
+					}
+				}
+				
 				if(array_key_exists("like", $params)) {
 					foreach ($params['like'] as $key => $value) {
 						if(!is_array($value)) {
@@ -97,7 +103,7 @@ class Order_model extends CI_Model {
 					$result = ($query->num_rows() > 0) ? $query->result_array() : FALSE;
 				}
 			}
-
+			
 			return $result;
 		}
 	}

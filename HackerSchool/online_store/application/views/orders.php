@@ -8,6 +8,12 @@
 		var url = "<?php echo site_url("orders/decline_order"); ?>";
 		return url;
 	}
+	
+	function getConfirmOrderUrl() {
+		var url = "<?php echo site_url("orders/deliver_order"); ?>";
+		return url;
+	}
+	
 
 </script>
 
@@ -17,7 +23,6 @@
 	 <div class="vertical-menu">
 	  <a href="<?php echo site_url("users/cart"); ?>">Количка</a>	 
 	  <a href="<?php echo site_url("users/orders"); ?>" class="active">Поръчки</a>
-	  <a href="<?php echo site_url("users/payments"); ?>">Плащания</a>	
 	  <a href="<?php echo site_url("users/account"); ?>">Настройки</a>
 	  <a href="<?php echo site_url("users/details"); ?>">Детайли</a>
 	</div>
@@ -33,18 +38,26 @@
 			<th>Обща сума</th>
 			<th>Състояние</th>
 			<th>Детайли</th>
-			<th>Откажи</th>
+			<th>Откажи?</th>
+			<th>Доставена?</th>
 		  </tr>
 		</thead>
 		<tbody>
-		<?php foreach($orders as $order) { ?>
-		  <tr>
+		<?php if(isset($orders) && $orders) foreach($orders as $order) { ?>
+		  <tr data-id="<?php echo htmlspecialchars($order['order_id'], ENT_QUOTES); ?>">
 			<td><?php echo htmlspecialchars($order['order_id'], ENT_QUOTES); ?></td>
 			<td><?php echo htmlspecialchars($order['order_created_at'], ENT_QUOTES); ?></td>
-			<td><?php echo htmlspecialchars($order['amount_leva'], ENT_QUOTES); ?></td>
+			<td class="cart_product_price_td"><?php echo htmlspecialchars(number_format($order['amount_leva'], 2), ENT_QUOTES); ?></td>
 			<td class="order_status"><?php echo htmlspecialchars($order['status_name'], ENT_QUOTES); ?></td>
 			<td><a href="<?php echo site_url("orders/show_order/" . htmlentities($order['order_id'], ENT_QUOTES)); ?>" class="order_details">Детайли</a></td>
-			<td><a href="#" data-id="<?php echo htmlspecialchars($order['order_id'], ENT_QUOTES); ?>" class="cancel_order"><?php if((htmlspecialchars($order['status_id'], ENT_QUOTES) != 1) && (htmlspecialchars($order['status_id'], ENT_QUOTES)) != 2 && (htmlspecialchars($order['status_id'], ENT_QUOTES) != 3)) echo "Откажи"; ?></a></td>		
+			<td><?php if(htmlspecialchars($order['status_id'], ENT_QUOTES) == 4) { ?>
+				<a href="#" class="cancel_order">Откажи</a>
+				<?php } ?>
+			</td>	
+			<td><?php if(htmlspecialchars($order['status_id'], ENT_QUOTES) == 7) { ?>
+				<a href="#" class="confirm_order">Потвърди</a>
+				<?php } ?>
+			</td>	
 		  </tr>	
 		  <?php } ?>
 		</tbody>

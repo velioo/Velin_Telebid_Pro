@@ -48,6 +48,12 @@ class User_model extends CI_Model {
 					}
 				}
 				
+				if(array_key_exists("where_in", $params)) {
+					foreach ($params['where_in'] as $key => $value) {
+						$this->db->where_in($key, $value);
+					}
+				}
+				
 				if(array_key_exists("like", $params)) {
 					foreach ($params['like'] as $key => $value) {
 						if(!is_array($value)) {
@@ -97,13 +103,15 @@ class User_model extends CI_Model {
 		}
 	}
 
-	public function insert($data = array()) {
-		  
-		
-		$insert = $this->db->insert($this->tableName, $data);
+	public function insert($data = array(), $tableName=null) {
+		  		
+		if($tableName === null)
+			$insert = $this->db->insert($this->tableName, $data);
+		else
+			$insert = $this->db->insert($tableName, $data);
 		
 		if($insert) {
-			return $this->db->insert_id();
+			return ($this->db->insert_id()) ? $this->db->insert_id() : true;
 		} else{
 			return false;
 		}
@@ -126,7 +134,7 @@ class User_model extends CI_Model {
 		
 	}
 
-	public function delete($params = array()) {
+	public function delete($params = array(), $tableName=null) {
 		
 		if(array_key_exists("conditions", $params)) {
 			foreach ($params['conditions'] as $key => $value) {
@@ -134,13 +142,15 @@ class User_model extends CI_Model {
 			}
 		}
 		
-		if(array_key_exists("id", $params)) {
-			$this->db->where('id', $params['id']);
+
+		if($tableName === null) {
 			$delete = $this->db->delete($this->tableName);
-			return $delete;
 		} else {
-			return FALSE;
-		}  
+			$delete = $this->db->delete($tableName);
+		}
+		
+		return $delete;
+
 	}
 
 

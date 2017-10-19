@@ -19,11 +19,11 @@ class Orders extends CI_Controller {
 	}
 	
 	public function confirm_order() {
-		if($this->session->userdata('isUserLoggedIn') && $this->input->post('paymentSubmit')) {
+		if($this->input->post('paymentSubmit')) {
 			$data = array();		
 			$this->load->model('cart_model');
 			$this->load->model('user_model');
-			$cartData = $this->cart_model->getRows(array('select' => array('products.*'), 
+			$cartData = $this->cart_model->getRows(array('select' => array('products.*', 'cart.quantity as cart_quantity'), 
 														   'joins' => array('products' => 'products.id = cart.product_id'), 
 														   'conditions' => array('cart.user_id' => $this->session->userdata('userId'))));
 			$payment_method = $this->order_model->getRows(array('table' => 'payment_methods', 'id' => $this->input->post('payment_method')));	
@@ -43,82 +43,76 @@ class Orders extends CI_Controller {
 				redirect('/welcome/');
 			}	
 		} else {
-			redirect('/users/login/');
+			redirect('/welcome/');
 		}
 	}
 	
 	public function create_order() {
 		
-		if($this->session->userdata('isUserLoggedIn')) {
-			if($this->input->post('confirmSubmit')) {
-				$data = array();
-				
-				$this->load->model('cart_model');
-				$cartData = $this->cart_model->getRows(array('select' => array('products.id', 'products.price_leva'), 
-															   'joins' => array('products' => 'products.id = cart.product_id'), 
-															   'conditions' => array('cart.user_id' => $this->session->userdata('userId')), 
-															   'group_by' => array('products.id')));		
-				if($cartData) {											   
-				
-					$amountLeva = 0.0;										   
-					foreach($cartData as $c) {
-						$c['price_leva'] = (float)$c['price_leva'];
-						$amountLeva += $c['price_leva'];
-					}
-
-					$orderData = array(
-						'user_id' => $this->session->userdata('userId'),
-						'report' => '',
-						'amount_leva' => $amountLeva,
-					);
-					
-					$this->db->trans_begin();
-
-					$orderId = $this->order_model->insert($orderData);		
-					foreach($cartData as $c) {		
-						$purchaseData = array(
-							'product_id' => $c['id'],
-							'order_id' => $orderId,
-							'price_leva' => $c['price_leva']
-						);			
-						$insert = $this->order_model->insert($purchaseData, 'order_products');
-					}
-					
-					$update = $this->order_model->update(array('set' => array('payment_method_id' => $this->session->userdata('payment_method')), 'conditions' => array('orders.id' => $orderId)));
-					if($update) {
-						$data['payment_details'] = $this->order_model->getRows(array('table' => 'payment_methods', 'conditions' => array('payment_methods.id' => $this->session->userdata('payment_method')), 'returnType' => 'single'));
-						$this->session->unset_userdata('payment_method');
-					}
-					
-					$delete = $this->cart_model->delete(array('conditions' => array('user_id' => $this->session->userdata('userId'))));
-
-					if ($this->db->trans_status() === FALSE) {
-						$this->db->trans_rollback();
-					} else {
-						$this->db->trans_commit();
-					}
-					$data['title'] = 'Order Placed';
-					$this->load->view('order_created.php', $data);
-								
-				} else {
-					redirect('/welcome/');
-				}	
-			} else {
-				echo "There was a server error while processing your order.";
-			}
-		} else {
-				redirect('/users/login/');
-		} 
-	}
-	
-	public function payment_method() {
-		
-		if($this->session->userdata('userId')) {	
-							
+		if($this->input->post('confirmSubmit')) {
 			$data = array();
 			
 			$this->load->model('cart_model');
-			$cartData = $this->cart_model->getRows(array('select' => array('products.*'), 
+			$cartData = $this->cart_model->getRows(array('select' => array('products.id', 'products.price_leva', 'cart.quantity as cart_quantity'), 
+														   'joins' => array('products' => 'products.id = cart.product_id'), 
+														   'conditions' => array('cart.user_id' => $this->session->userdata('userId'))));		
+			if($cartData) {											   
+			
+				$amountLeva = 0.0;										   
+				foreach($cartData as $c) {
+					$c['price_leva'] = (float)$c['price_leva'];
+					$amountLeva += ($c['price_leva'] * $c['cart_quantity']);
+				}
+
+				$orderData = array(
+					'user_id' => $this->session->userdata('userId'),
+					'report' => '',
+					'amount_leva' => $amountLeva,
+				);
+				
+				$this->db->trans_begin();
+
+				$orderId = $this->order_model->insert($orderData);		
+				foreach($cartData as $c) {		
+					$purchaseData = array(
+						'product_id' => $c['id'],
+						'order_id' => $orderId,
+						'price_leva' => $c['price_leva'],
+						'quantity' => $c['cart_quantity']
+					);			
+					$insert = $this->order_model->insert($purchaseData, 'order_products');
+				}
+				
+				$update = $this->order_model->update(array('set' => array('payment_method_id' => $this->session->userdata('payment_method')), 'conditions' => array('orders.id' => $orderId)));
+				if($update) {
+					$data['payment_details'] = $this->order_model->getRows(array('table' => 'payment_methods', 'conditions' => array('payment_methods.id' => $this->session->userdata('payment_method')), 'returnType' => 'single'));
+					$this->session->unset_userdata('payment_method');
+				}
+				
+				$delete = $this->cart_model->delete(array('conditions' => array('user_id' => $this->session->userdata('userId'))));
+
+				if ($this->db->trans_status() === FALSE) {
+					$this->db->trans_rollback();
+				} else {
+					$this->db->trans_commit();
+				}
+				$data['title'] = 'Order Placed';
+				$this->load->view('order_created.php', $data);
+							
+			} else {
+				redirect('/welcome/');
+			}	
+		} else {
+			echo redirect('/welcome/');
+		}
+	}
+	
+	public function payment_method() {
+									
+			$data = array();
+			
+			$this->load->model('cart_model');
+			$cartData = $this->cart_model->getRows(array('select' => array('products.id', 'products.name', 'products.price_leva', 'products.image', 'cart.quantity'), 
 														   'joins' => array('products' => 'products.id = cart.product_id'), 
 														   'conditions' => array('cart.user_id' => $this->session->userdata('userId'))));		
 			if($cartData) {
@@ -129,15 +123,11 @@ class Orders extends CI_Controller {
 			} else {
 				redirect('/welcome/');
 			}
-
-		} else {
-			redirect('/users/login/');
-		}
 	}
 	
 	public function show_order($orderId=null) {
 		
-		if($this->session->userdata('isUserLoggedIn') && is_numeric($orderId)) {
+		if(is_numeric($orderId)) {
 
 			$data = array();		
 			$this->load->model('user_model');					
@@ -167,7 +157,8 @@ class Orders extends CI_Controller {
 																					  'products.name as name', 
 																					  'products.image as image', 
 																					  'products.id as product_id', 
-																					  'products.price_leva'),
+																					  'products.price_leva',
+																					  'order_products.quantity'),
 																			'joins' => array('order_products' => 'order_products.product_id = products.id',
 																							 'orders' => 'orders.id = order_products.order_id'),
 																			'conditions' => array('orders.id' => $orderId)));
@@ -182,12 +173,12 @@ class Orders extends CI_Controller {
 			}
 			
 		} else {
-			redirect('/users/login/');
+			redirect('/welcome/');
 		}
 	}
 	
 	function decline_order() {
-		if($this->session->userdata('userId') && $this->input->post('orderId')) {
+		if($this->input->post('orderId')) {
 						
 			$update = $this->order_model->update(array('set' => array('orders.status_id' => 2), 'conditions' => array('orders.id' => $this->input->post('orderId'))));
 			
@@ -198,30 +189,25 @@ class Orders extends CI_Controller {
 			}
 			
 		} else {
-			redirect('/users/login/');
+			redirect('/welcome/');
 		}
 	}
 	
-	/*public function select_payment() {		
-		
-		if($this->session->userdata('userId') && $this->session->userdata('orderId')) {				
-				
-			$data = array();
-			$data['title'] = 'Order Placed';
-																					
-			$update = $this->order_model->update(array('conditions' => array('orders.id' => $this->session->userdata('orderId')), 'set' => array('payment_method_id' => $this->input->post('payment_method'), 'status_id' => 4)));		
+	function deliver_order() {
+		if($this->input->post('orderId')) {
+						
+			$update = $this->order_model->update(array('set' => array('orders.status_id' => 1), 'conditions' => array('orders.id' => $this->input->post('orderId'))));
+			
 			if($update) {
-				$this->session->unset_userdata('orderId');
-				$this->load->view('order_created.php', $data);
+				echo 1;
 			} else {
-				"There was a server error please try agin later.";
-			}											
+				echo 0;
+			}
 			
 		} else {
-			redirect('/users/login/');
+			redirect('/welcome/');
 		}
-		
-	}*/
+	}
 	
 }
 

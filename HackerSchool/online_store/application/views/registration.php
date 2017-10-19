@@ -102,34 +102,28 @@
 		
 		<div class="form-group">
             <?php
-            if(!empty($user['gender']) && $user['gender'] == 'Another'){
-                $fcheck = '';
-                $mcheck = '';
-                $acheck = 'checked="checked"';
-            } elseif(!empty($user['gender']) && $user['gender'] == 'Female'){
-                $fcheck = 'checked="checked"';
-                $mcheck = '';
-                $acheck = '';
-            } else {
-				$acheck = '';
-                $fcheck = '';
-                $mcheck = 'checked="checked"';
-			}
+				if(!empty($user['gender']) && $user['gender'] == 'Male'){
+					$fcheck = '';
+					$mcheck = 'checked="checked"';
+				} elseif(!empty($user['gender']) && $user['gender'] == 'Female'){
+					$fcheck = 'checked="checked"';
+					$mcheck = '';
+				} else {
+					$mcheck = '';
+					$fcheck = '';
+				}
             ?>
             <label class="col-sm-1 control-label">Пол:</label>
 
                 <label>
-                <input type="radio" name="gender" value="Male" <?php echo $mcheck; ?>>
+                <input type="radio" name="gender" value="Male" <?php echo $mcheck; ?> >
                 Мъж
                 </label>            
                 <label>
-                  <input type="radio" name="gender" value="Female" <?php echo $fcheck; ?>>
-                  Жена
+                <input type="radio" name="gender" value="Female" <?php echo $fcheck; ?> >
+                 Жена
                 </label>
                 <label>
-                  <input type="radio" name="gender" value="Another" <?php echo $acheck; ?>>
-                  Друго
-                </label>
         </div></br>  
         <div class="g-recaptcha" data-sitekey="6LeBrTIUAAAAAJqfzWbZvxPv8SFxfW8GMjxCynhO"></div>
 		<?php echo form_error('g-recaptcha-response','<span class="help-block">','</span>'); ?>

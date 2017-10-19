@@ -16,11 +16,12 @@
     </br></br>
     <form action="<?php echo site_url("users/reset_page"); ?>" method="post" class="form-horizontal login_register_form">
     
-    	<div class="form-group <?php if(!empty($this->session->userdata('error_msg_timeless'))) { echo "has-error has-feedback"; } ?>">
+    	<div class="form-group <?php if(form_error('email') == true) { echo "has-error has-feedback"; } ?>">
 		  <label class="col-sm-1 control-label" for="email">Имейл:</label>
 		  <div class="col-sm-8">
 			<input type="text" class="form-control" id="email" name="email" value="<?php echo !empty($user['email']) ? htmlspecialchars($user['email'], ENT_QUOTES) : ''; ?>">
 			<span class="glyphicon glyphicon-remove form-control-feedback" <?php if(form_error('email') == true) { echo "style='display:inline-block;'"; } ?>></span>
+			<?php echo form_error('email','<span class="help-block">','</span>'); ?>	  
 		  </div>
 		</div>
 		</br>

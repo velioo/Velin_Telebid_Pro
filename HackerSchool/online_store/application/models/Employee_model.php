@@ -48,6 +48,12 @@ class Employee_model extends CI_Model {
 					}
 				}
 				
+				if(array_key_exists("where_in", $params)) {
+					foreach ($params['where_in'] as $key => $value) {
+						$this->db->where_in($key, $value);
+					}
+				}
+				
 				if(array_key_exists("like", $params)) {
 					foreach ($params['like'] as $key => $value) {
 						if(!is_array($value)) {

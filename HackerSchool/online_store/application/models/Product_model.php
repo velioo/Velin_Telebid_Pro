@@ -32,7 +32,12 @@ class Product_model extends CI_Model {
 			
 			if(array_key_exists("joins", $params)) {
 				foreach ($params['joins'] as $key => $value) {
-					$this->db->join($key, $value);
+					if(is_array($value)) {
+						$this->db->join($key, $value[0], $value[1]);
+					} else {
+						$this->db->join($key, $value);
+					}
+					
 				}
 			}
 			
@@ -45,6 +50,16 @@ class Product_model extends CI_Model {
 				if(array_key_exists("conditions", $params)) {
 					foreach ($params['conditions'] as $key => $value) {
 						$this->db->where($key, $value);
+					}
+				}
+				
+				if(array_key_exists("where", $params)) {
+					$this->db->where($params['where']);
+				}
+				
+				if(array_key_exists("where_in", $params)) {
+					foreach ($params['where_in'] as $key => $value) {
+						$this->db->where_in($key, $value);
 					}
 				}
 				
@@ -96,23 +111,26 @@ class Product_model extends CI_Model {
 					$result = ($query->num_rows() > 0) ? $query->result_array() : FALSE;
 				}
 			}
-			
+			//echo $this->db->last_query() . "</br>";
 			return $result;
 		}
 
         
     }
     
-    public function insert($data = array()) {
-        
-        $insert = $this->db->insert($this->tableName, $data);
-        
-        if($insert) {
-            return $this->db->insert_id();
-        } else{
-            return false;
-        }
-    }
+	public function insert($data = array(), $tableName=null) {
+		  		
+		if($tableName === null)
+			$insert = $this->db->insert($this->tableName, $data);
+		else
+			$insert = $this->db->insert($tableName, $data);
+		
+		if($insert) {
+			return ($this->db->insert_id()) ? $this->db->insert_id() : true;
+		} else{
+			return false;
+		}
+	}
     
     public function update($params = array()) {
 		

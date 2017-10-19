@@ -10,6 +10,9 @@
 	} elseif(!empty($this->session->userdata('error_msg'))) {
 		echo '<p class="statusMsg">' . $this->session->userdata('error_msg') . '</p>';
 		$this->session->unset_userdata('error_msg');
+	} elseif(!empty($this->session->userdata('long_msg'))) {
+		echo '<p class="statusMsgLong">' . $this->session->userdata('long_msg') . '</p>';
+		$this->session->unset_userdata('long_msg');
 	}
     ?>
     </br></br>
